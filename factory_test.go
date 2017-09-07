@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	NumberOfWorkes = 20
-	QueueSize = int64(1000)
+	NumberOfWorkers = 20
+	QueueSize       = int64(1000)
 )
 
 var (
@@ -16,7 +16,7 @@ var (
 )
 
 func TestNewThreadPool(t *testing.T) {
-	Pool = NewThreadPool(NumberOfWorkes,QueueSize)
+	Pool = NewThreadPool(NumberOfWorkers,QueueSize)
 }
 
 func TestThreadPool_Execute(t *testing.T) {
