@@ -1,8 +1,8 @@
 package threadpool
 
 import (
-	"testing"
 	"fmt"
+	"testing"
 	"time"
 )
 
@@ -16,12 +16,12 @@ var (
 )
 
 func TestNewThreadPool(t *testing.T) {
-	Pool = NewThreadPool(NumberOfWorkers,QueueSize)
+	Pool = NewThreadPool(NumberOfWorkers, QueueSize)
 }
 
 func TestThreadPool_Execute(t *testing.T) {
-	data:= &Data{Val:"pristine"}
-	task:=&TestTask{TestData:data}
+	data := &Data{Val: "pristine"}
+	task := &TestTask{TestData: data}
 	Pool.Execute(task)
 
 	time.Sleep(2 * time.Second)
@@ -40,7 +40,7 @@ type Data struct {
 	Val string
 }
 
-func (t *TestTask) Run(){
+func (t *TestTask) Run() {
 	fmt.Println("Running the task")
-	t.TestData.Val="changed"
+	t.TestData.Val = "changed"
 }
