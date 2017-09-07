@@ -22,3 +22,7 @@ Scalable threadpool implementation using Go to handle the huge network trafic.
   task:=&MyTask{}
   pool.Execute(task)
   ```
+
+
+## Note
+This still in works
