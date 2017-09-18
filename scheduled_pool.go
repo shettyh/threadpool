@@ -1,7 +1,6 @@
 package threadpool
 
 import (
-	"math"
 	"sync"
 	"time"
 )
@@ -13,7 +12,6 @@ type ScheduledThreadPool struct {
 	tasks       *sync.Map
 	noOfWorkers int
 	counter     uint64
-	queueSize   int64
 	counterLock sync.Mutex
 }
 
@@ -21,7 +19,6 @@ type ScheduledThreadPool struct {
 func NewScheduledThreadPool(noOfWorkers int) *ScheduledThreadPool {
 	pool := &ScheduledThreadPool{}
 	pool.noOfWorkers = noOfWorkers
-	pool.queueSize = math.MaxInt32
 	pool.workers = make(chan chan Runnable, noOfWorkers)
 	pool.tasks = new(sync.Map)
 	pool.createPool()
@@ -80,13 +77,16 @@ func (stf *ScheduledThreadPool) updateCounter() {
 	stf.counterLock.Unlock()
 }
 
-// Schedule the task with given delay
-func (stf *ScheduledThreadPool) Schedule(task Runnable, delay time.Duration) {
+// ScheduleOnce the task with given delay
+func (stf *ScheduledThreadPool) ScheduleOnce(task Runnable, delay time.Duration) {
 	scheduleTime := stf.counter + uint64(delay.Seconds())
 	existingTasks, ok := stf.tasks.Load(scheduleTime)
+
+	// Create new set if no tasks are already there
 	if !ok {
 		existingTasks = NewSet()
 		stf.tasks.Store(scheduleTime, existingTasks)
 	}
+	// Add task
 	existingTasks.(*Set).Add(task)
 }
