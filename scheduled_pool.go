@@ -4,62 +4,79 @@ import (
 	"sync"
 	"math"
 	"nokia.com/nas/services/telemetry_service_go/ds"
+	"time"
 )
 
+// ScheduledThreadPool
+// Schedules the task with the given delay
 type ScheduledThreadPool struct {
-	workers chan chan Runnable
-	jobQueue chan Runnable
-	tasks *sync.Map
+	workers     chan chan Runnable
+	tasks       *sync.Map
 	noOfWorkers int
-	counter uint64
-	queueSize int64
+	counter     uint64
+	queueSize   int64
 	counterLock sync.Mutex
 }
 
+// NewScheduledThreadPool creates new scheduler thread pool with given number of workers
 func NewScheduledThreadPool(noOfWorkers int) *ScheduledThreadPool {
 	pool := &ScheduledThreadPool{}
-	pool.noOfWorkers=noOfWorkers
+	pool.noOfWorkers = noOfWorkers
 	pool.queueSize = math.MaxInt32
-	pool.workers = make(chan chan Runnable,noOfWorkers)
-	pool.jobQueue = make(chan Runnable,pool.queueSize)
+	pool.workers = make(chan chan Runnable, noOfWorkers)
 	pool.tasks = new(sync.Map)
 	pool.createPool()
 	return pool
 }
 
-func (stf *ScheduledThreadPool) createPool(){
-	for i:=0;i<stf.noOfWorkers; i++ {
-		worker:= NewWorker(stf.workers)
+// createPool creates the workers pool
+func (stf *ScheduledThreadPool) createPool() {
+	for i := 0; i < stf.noOfWorkers; i++ {
+		worker := NewWorker(stf.workers)
 		worker.Start()
 	}
 
 	go stf.dispatch()
 }
 
-func (stf *ScheduledThreadPool) dispatch(){
-	go stf.intervalRunner()
+// dispatch will check for the task to run for current time and invoke the task
+func (stf *ScheduledThreadPool) dispatch() {
+	for {
+		go stf.intervalRunner()     // Runner to check the task to run for current time
+		time.Sleep(time.Second * 1) // Check again after 1 sec
+	}
 }
 
-func (stf *ScheduledThreadPool) intervalRunner(){
+// intervalRunner checks the tasks map and runs the tasks that are applicable at this point of time
+func (stf *ScheduledThreadPool) intervalRunner() {
+	// update the time count
 	stf.updateCounter()
-	currentTasksToRun,ok:=stf.tasks.Load(stf.counter)
 
+	// Get the task for the counter value
+	currentTasksToRun, ok := stf.tasks.Load(stf.counter)
+
+	// Found tasks
 	if ok {
+		// Convert to tasks set
 		currentTasksSet := currentTasksToRun.(*ds.Set)
 
-		for _,val:= range currentTasksSet.GetAll() {
-			task:=val.(Runnable)
-			worker:=<-stf.workers
-			worker <- task
+		// For each tasks , get a worker from the pool and run the task
+		for _, val := range currentTasksSet.GetAll() {
+			job := val.(Runnable)
+
+			go func(job Runnable) {
+				// get the worker from pool who is free
+				worker := <-stf.workers
+				// Submit the job to the worker
+				worker <- job
+			}(job)
 		}
 	}
 }
 
-func (stf *ScheduledThreadPool) updateCounter(){
+// updateCounter thread safe update of counter
+func (stf *ScheduledThreadPool) updateCounter() {
 	stf.counterLock.Lock()
 	stf.counter++
 	stf.counterLock.Unlock()
 }
-
-
-
