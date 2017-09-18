@@ -3,7 +3,6 @@ package threadpool
 import (
 	"sync"
 	"math"
-	"nokia.com/nas/services/telemetry_service_go/ds"
 	"time"
 )
 
@@ -58,7 +57,7 @@ func (stf *ScheduledThreadPool) intervalRunner() {
 	// Found tasks
 	if ok {
 		// Convert to tasks set
-		currentTasksSet := currentTasksToRun.(*ds.Set)
+		currentTasksSet := currentTasksToRun.(*Set)
 
 		// For each tasks , get a worker from the pool and run the task
 		for _, val := range currentTasksSet.GetAll() {
@@ -79,4 +78,13 @@ func (stf *ScheduledThreadPool) updateCounter() {
 	stf.counterLock.Lock()
 	stf.counter++
 	stf.counterLock.Unlock()
+}
+
+// Schedule the task with given delay
+func (stf * ScheduledThreadPool) Schedule(task Runnable, delay time.Duration){
+	existingTasks,ok:=stf.tasks.Load(stf.counter+uint64(delay.Seconds()))
+	if !ok {
+		existingTasks = NewSet()
+	}
+	existingTasks.(*Set).Add(task)
 }
