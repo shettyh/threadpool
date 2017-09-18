@@ -20,7 +20,7 @@ func TestNewThreadPool(t *testing.T) {
 }
 
 func TestThreadPool_Execute(t *testing.T) {
-	data := &Data{Val: "pristine"}
+	data := &TestData{Val: "pristine"}
 	task := &TestTask{TestData: data}
 	Pool.Execute(task)
 
@@ -33,10 +33,10 @@ func TestThreadPool_Execute(t *testing.T) {
 }
 
 type TestTask struct {
-	TestData *Data
+	TestData *TestData
 }
 
-type Data struct {
+type TestData struct {
 	Val string
 }
 

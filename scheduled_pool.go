@@ -82,9 +82,11 @@ func (stf *ScheduledThreadPool) updateCounter() {
 
 // Schedule the task with given delay
 func (stf * ScheduledThreadPool) Schedule(task Runnable, delay time.Duration){
-	existingTasks,ok:=stf.tasks.Load(stf.counter+uint64(delay.Seconds()))
+	scheduleTime := stf.counter+uint64(delay.Seconds())
+	existingTasks,ok:=stf.tasks.Load(scheduleTime)
 	if !ok {
 		existingTasks = NewSet()
+		stf.tasks.Store(scheduleTime,existingTasks)
 	}
 	existingTasks.(*Set).Add(task)
 }
