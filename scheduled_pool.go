@@ -1,8 +1,8 @@
 package threadpool
 
 import (
-	"sync"
 	"math"
+	"sync"
 	"time"
 )
 
@@ -81,12 +81,12 @@ func (stf *ScheduledThreadPool) updateCounter() {
 }
 
 // Schedule the task with given delay
-func (stf * ScheduledThreadPool) Schedule(task Runnable, delay time.Duration){
-	scheduleTime := stf.counter+uint64(delay.Seconds())
-	existingTasks,ok:=stf.tasks.Load(scheduleTime)
+func (stf *ScheduledThreadPool) Schedule(task Runnable, delay time.Duration) {
+	scheduleTime := stf.counter + uint64(delay.Seconds())
+	existingTasks, ok := stf.tasks.Load(scheduleTime)
 	if !ok {
 		existingTasks = NewSet()
-		stf.tasks.Store(scheduleTime,existingTasks)
+		stf.tasks.Store(scheduleTime, existingTasks)
 	}
 	existingTasks.(*Set).Add(task)
 }

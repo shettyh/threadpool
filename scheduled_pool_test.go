@@ -14,16 +14,16 @@ func TestNewScheduledThreadPool(t *testing.T) {
 }
 
 func TestScheduledThreadPool_Schedule(t *testing.T) {
-	task := &TestTask{TestData:&TestData{Val:"pristine"}}
-	pool.Schedule(task,time.Second*20)
+	task := &TestTask{TestData: &TestData{Val: "pristine"}}
+	pool.Schedule(task, time.Second*20)
 
-	time.Sleep(5*time.Second)
+	time.Sleep(5 * time.Second)
 
 	if task.TestData.Val != "pristine" {
 		t.Fail()
 	}
 
-	time.Sleep(20*time.Second)
+	time.Sleep(20 * time.Second)
 
 	if task.TestData.Val == "pristine" {
 		t.Fail()
