@@ -8,7 +8,7 @@ import (
 // ScheduledThreadPool
 // Schedules the task with the given delay
 type ScheduledThreadPool struct {
-	workers     chan chan Runnable
+	workers     chan chan interface{}
 	tasks       *sync.Map
 	noOfWorkers int
 	counter     uint64
@@ -19,7 +19,7 @@ type ScheduledThreadPool struct {
 func NewScheduledThreadPool(noOfWorkers int) *ScheduledThreadPool {
 	pool := &ScheduledThreadPool{}
 	pool.noOfWorkers = noOfWorkers
-	pool.workers = make(chan chan Runnable, noOfWorkers)
+	pool.workers = make(chan chan interface{}, noOfWorkers)
 	pool.tasks = new(sync.Map)
 	pool.createPool()
 	return pool
@@ -58,14 +58,12 @@ func (stf *ScheduledThreadPool) intervalRunner() {
 
 		// For each tasks , get a worker from the pool and run the task
 		for _, val := range currentTasksSet.GetAll() {
-			job := val.(Runnable)
-
-			go func(job Runnable) {
+			go func(job interface{}) {
 				// get the worker from pool who is free
 				worker := <-stf.workers
 				// Submit the job to the worker
 				worker <- job
-			}(job)
+			}(val)
 		}
 	}
 }
