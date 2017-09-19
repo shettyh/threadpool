@@ -26,8 +26,9 @@ func (t *ThreadPool) Execute(task Runnable) {
 }
 
 // ExecuteFuture will submit the task to the threadpool and return the response handle
-func (t *ThreadPool) ExecuteFuture(task Callable) chan *Future {
-	futureTask:= CallableTask{Task:task,Handle:make(chan *Future)}
+func (t *ThreadPool) ExecuteFuture(task Callable) *Future {
+	handle:= &Future{response:make(chan interface{})}
+	futureTask:= CallableTask{Task:task,Handle:handle}
 	t.jobQueue <- futureTask
 	return futureTask.Handle
 }

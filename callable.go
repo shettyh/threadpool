@@ -6,13 +6,19 @@ type Callable interface {
 
 type CallableTask struct {
 	Task Callable
-	Handle chan *Future
+	Handle *Future
 }
 
 type Future struct {
-	response interface{}
+	response chan interface{}
+	done bool
 }
 
+//Blocking call
 func (f *Future) Get() interface{}{
-	return f.response
+	return <-f.response
+}
+
+func (f *Future) IsDone() bool{
+	return f.done
 }

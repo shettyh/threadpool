@@ -29,8 +29,8 @@ func (w Worker) Start() {
 				case CallableTask:
 					task := job.(CallableTask)
 					response := task.Task.Call()
-					future:= &Future{response:response}
-					task.Handle <- future
+					task.Handle.done=true
+					task.Handle.response <- response
 					break
 				}
 			}

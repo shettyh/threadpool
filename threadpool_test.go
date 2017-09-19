@@ -35,8 +35,8 @@ func TestThreadPool_Execute(t *testing.T) {
 func TestThreadPool_ExecuteFuture(t *testing.T) {
 	task:= &TestTaskFuture{}
 	handle:=Pool.ExecuteFuture(task)
-	result := <- handle
-	fmt.Println("Thread done ",result.response)
+	response := handle.Get()
+	fmt.Println("Thread done ",response)
 }
 
 type TestTask struct {
