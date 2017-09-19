@@ -9,7 +9,7 @@ type ThreadPool struct {
 	workerPool chan chan Runnable
 }
 
-// NewThreadPool creates threadpool
+// NewThreadPool creates thread pool
 func NewThreadPool(noOfWorkers int, queueSize int64) *ThreadPool {
 	threadPool := &ThreadPool{QueueSize: queueSize, NoOfWorkers: noOfWorkers}
 	threadPool.jobQueue = make(chan Runnable, queueSize)
@@ -21,6 +21,7 @@ func NewThreadPool(noOfWorkers int, queueSize int64) *ThreadPool {
 
 // Execute submits the job to available worker
 func (t *ThreadPool) Execute(task Runnable) {
+	// Add the task to the job queue
 	t.jobQueue <- task
 }
 
@@ -40,8 +41,11 @@ func (t *ThreadPool) dispatch() {
 	for {
 		select {
 		case job := <-t.jobQueue:
+			// Got job
 			go func(job Runnable) {
+				//Find a worker for the job
 				jobChannel := <-t.workerPool
+				//Submit job to the worker
 				jobChannel <- job
 			}(job)
 		}
