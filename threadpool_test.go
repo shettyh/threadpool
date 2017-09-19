@@ -36,6 +36,9 @@ func TestThreadPool_ExecuteFuture(t *testing.T) {
 	task:= &TestTaskFuture{}
 	handle:=Pool.ExecuteFuture(task)
 	response := handle.Get()
+	if !handle.IsDone() {
+		t.Fail()
+	}
 	fmt.Println("Thread done ",response)
 }
 
