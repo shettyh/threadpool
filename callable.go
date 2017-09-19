@@ -4,14 +4,14 @@ type Callable interface {
 	Call() interface{}
 }
 
-type CallableTask struct {
-	Task Callable
-	Handle *Future
-}
-
 type Future struct {
 	response chan interface{}
 	done bool
+}
+
+type callableTask struct {
+	Task Callable
+	Handle *Future
 }
 
 //Blocking call
