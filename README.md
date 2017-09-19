@@ -28,14 +28,14 @@ Scalable threadpool implementation using Go to handle the huge network trafic.
 ## Scheduled threadpool
 
 - Create instance of 'ScheduledThreadPool' with number of workers required
- ```
- schedulerPool:= threadpool.NewScheduledThreadPool(10)
- ```
+  ```
+  schedulerPool:= threadpool.NewScheduledThreadPool(10)
+  ```
 - Create Task and schedule
- ```
- task:=&MyTask{}
- pool.ScheduleOnce(task, time.Second*20) // Time delay is in seconds only as of now
- ```
+  ```
+  task:=&MyTask{}
+  pool.ScheduleOnce(task, time.Second*20) // Time delay is in seconds only as of now
+  ```
 
 ## Note
 This still in works
