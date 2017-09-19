@@ -2,6 +2,8 @@
 Scalable threadpool implementation using Go to handle the huge network trafic. 
 
 ## Usage
+
+## Threadpool
 - Implement `Runnable` interface for tha task that needs to be executed. For example
 
 
@@ -13,7 +15,7 @@ Scalable threadpool implementation using Go to handle the huge network trafic.
   }
    
   ```
-- Create instance of `ThreadPool`
+- Create instance of `ThreadPool` with number of workers required and the task queue size
   ```
   pool := threadpool.NewThreadPool(200,1000000)
   ```
@@ -23,6 +25,17 @@ Scalable threadpool implementation using Go to handle the huge network trafic.
   pool.Execute(task)
   ```
 
+## Scheduled threadpool
+
+- Create instance of 'ScheduledThreadPool' with number of workers required
+ ```
+ schedulerPool:= threadpool.NewScheduledThreadPool(10)
+ ```
+- Create Task and schedule
+ ```
+ task:=&MyTask{}
+ pool.ScheduleOnce(task, time.Second*20) // Time delay is in seconds only as of now
+ ```
 
 ## Note
 This still in works
