@@ -6,7 +6,7 @@ type Callable interface {
 
 type CallableTask struct {
 	Task Callable
-	Handle chan Future
+	Handle chan *Future
 }
 
 type Future struct {

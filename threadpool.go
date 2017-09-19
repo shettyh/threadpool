@@ -25,6 +25,13 @@ func (t *ThreadPool) Execute(task Runnable) {
 	t.jobQueue <- task
 }
 
+// ExecuteFuture will submit the task to the threadpool and return the response handle
+func (t *ThreadPool) ExecuteFuture(task Callable) chan *Future {
+	futureTask:= CallableTask{Task:task,Handle:make(chan *Future)}
+	t.jobQueue <- futureTask
+	return futureTask.Handle
+}
+
 // createPool creates the workers and start listening on the jobQueue
 func (t *ThreadPool) createPool() {
 	for i := 0; i < t.NoOfWorkers; i++ {

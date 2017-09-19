@@ -26,8 +26,13 @@ func (w Worker) Start() {
 				case Runnable:
 					job.(Runnable).Run()
 					break
+				case CallableTask:
+					task := job.(CallableTask)
+					response := task.Task.Call()
+					future:= &Future{response:response}
+					task.Handle <- future
+					break
 				}
-
 			}
 		}
 	}()
