@@ -1,6 +1,10 @@
 # Golang Threadpool implementation
 Scalable threadpool implementation using Go to handle the huge network trafic. 
 
+## Install
+
+`go get github.com/shettyh/threadpool`
+
 ## Usage
 
 ## Threadpool
@@ -27,7 +31,7 @@ Scalable threadpool implementation using Go to handle the huge network trafic.
 
 ## Scheduled threadpool
 
-- Create instance of 'ScheduledThreadPool' with number of workers required
+- Create instance of `ScheduledThreadPool` with number of workers required
   ```
   schedulerPool:= threadpool.NewScheduledThreadPool(10)
   ```
