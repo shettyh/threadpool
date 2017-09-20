@@ -5,15 +5,15 @@ type ThreadPool struct {
 	QueueSize   int64
 	NoOfWorkers int
 
-	jobQueue   chan Runnable
-	workerPool chan chan Runnable
+	jobQueue   chan interface{}
+	workerPool chan chan interface{}
 }
 
 // NewThreadPool creates thread pool
 func NewThreadPool(noOfWorkers int, queueSize int64) *ThreadPool {
 	threadPool := &ThreadPool{QueueSize: queueSize, NoOfWorkers: noOfWorkers}
-	threadPool.jobQueue = make(chan Runnable, queueSize)
-	threadPool.workerPool = make(chan chan Runnable, noOfWorkers)
+	threadPool.jobQueue = make(chan interface{}, queueSize)
+	threadPool.workerPool = make(chan chan interface{}, noOfWorkers)
 
 	threadPool.createPool()
 	return threadPool
@@ -23,6 +23,15 @@ func NewThreadPool(noOfWorkers int, queueSize int64) *ThreadPool {
 func (t *ThreadPool) Execute(task Runnable) {
 	// Add the task to the job queue
 	t.jobQueue <- task
+}
+
+// ExecuteFuture will submit the task to the threadpool and return the response handle
+func (t *ThreadPool) ExecuteFuture(task Callable) *Future {
+	// Create future and task
+	handle:= &Future{response:make(chan interface{})}
+	futureTask:= callableTask{Task: task,Handle: handle}
+	t.jobQueue <- futureTask
+	return futureTask.Handle
 }
 
 // createPool creates the workers and start listening on the jobQueue
@@ -42,7 +51,7 @@ func (t *ThreadPool) dispatch() {
 		select {
 		case job := <-t.jobQueue:
 			// Got job
-			go func(job Runnable) {
+			go func(job interface{}) {
 				//Find a worker for the job
 				jobChannel := <-t.workerPool
 				//Submit job to the worker
