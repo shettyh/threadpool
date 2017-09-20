@@ -40,10 +40,13 @@ Scalable threadpool implementation using Go to handle the huge network trafic.
   //Execute callable task
   task := &MyTaskCallable{}
   future := pool.ExecuteFuture(task)
+  
   //Check if the task is done
   isDone := future.IsDone() // true/false
+  
   //Get response , blocking call
   result := future.Get()
+  
   ```
 
 ### Scheduled threadpool
