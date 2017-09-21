@@ -1,0 +1,13 @@
+language: go
+
+sudo: required
+
+go:
+  - 1.7
+  - 1.8.x
+
+install:
+  - glide install
+
+script:
+  - go vet .
