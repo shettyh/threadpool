@@ -1,9 +1,9 @@
 package threadpool
 
 import (
+	"github.com/shettyh/threadpool/internal"
 	"sync"
 	"time"
-	"github.com/shettyh/threadpool/internal"
 )
 
 // ScheduledThreadPool

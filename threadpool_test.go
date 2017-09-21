@@ -33,13 +33,13 @@ func TestThreadPool_Execute(t *testing.T) {
 }
 
 func TestThreadPool_ExecuteFuture(t *testing.T) {
-	task:= &TestTaskFuture{}
-	handle:=Pool.ExecuteFuture(task)
+	task := &TestTaskFuture{}
+	handle := Pool.ExecuteFuture(task)
 	response := handle.Get()
 	if !handle.IsDone() {
 		t.Fail()
 	}
-	fmt.Println("Thread done ",response)
+	fmt.Println("Thread done ", response)
 }
 
 type TestTask struct {
@@ -55,7 +55,7 @@ func (t *TestTask) Run() {
 	t.TestData.Val = "changed"
 }
 
-type TestTaskFuture struct {}
+type TestTaskFuture struct{}
 
 func (t *TestTaskFuture) Call() interface{} {
 	return "Done"

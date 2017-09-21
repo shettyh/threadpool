@@ -40,7 +40,7 @@ func TestSet_GetAll(t *testing.T) {
 
 func TestSet_GetAllWithCap(t *testing.T) {
 	set.Add(50)
-	data:= set.GetAllWithCap(1)
+	data := set.GetAllWithCap(1)
 	if len(data) != 1 {
 		t.Fail()
 	}

@@ -29,7 +29,7 @@ func (w Worker) Start() {
 				case callableTask:
 					task := job.(callableTask)
 					response := task.Task.Call()
-					task.Handle.done=true
+					task.Handle.done = true
 					task.Handle.response <- response
 					break
 				}
