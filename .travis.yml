@@ -1,12 +1,15 @@
 language: go
 
-sudo: required
+sudo: enabled
+
+os: linux
 
 go:
   - 1.9.x
 
-install:
-  - go build
+install: true
 
 script:
+  - go build
   - go vet .
+  - go test ./...
