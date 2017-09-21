@@ -1,4 +1,4 @@
-package threadpool
+package internal
 
 import (
 	"github.com/golang/sync/syncmap"

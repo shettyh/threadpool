@@ -1,4 +1,4 @@
-package threadpool
+package internal
 
 import "testing"
 

@@ -3,6 +3,7 @@ package threadpool
 import (
 	"sync"
 	"time"
+	"github.com/shettyh/threadpool/internal"
 )
 
 // ScheduledThreadPool
@@ -54,7 +55,7 @@ func (stf *ScheduledThreadPool) intervalRunner() {
 	// Found tasks
 	if ok {
 		// Convert to tasks set
-		currentTasksSet := currentTasksToRun.(*Set)
+		currentTasksSet := currentTasksToRun.(*internal.Set)
 
 		// For each tasks , get a worker from the pool and run the task
 		for _, val := range currentTasksSet.GetAll() {
@@ -82,9 +83,9 @@ func (stf *ScheduledThreadPool) ScheduleOnce(task Runnable, delay time.Duration)
 
 	// Create new set if no tasks are already there
 	if !ok {
-		existingTasks = NewSet()
+		existingTasks = internal.NewSet()
 		stf.tasks.Store(scheduleTime, existingTasks)
 	}
 	// Add task
-	existingTasks.(*Set).Add(task)
+	existingTasks.(*internal.Set).Add(task)
 }
