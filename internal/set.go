@@ -61,9 +61,8 @@ func (s *Set) GetAllWithCap(cap int) []interface{} {
 		values = append(values, key)
 		if cap--; cap > 0 {
 			return true
-		} else {
-			return false
 		}
+		return false
 	})
 	return values
 }

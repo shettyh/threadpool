@@ -9,14 +9,14 @@ import (
 func main() {
 	pool := threadpool.NewThreadPool(2000, 100000)
 	time.Sleep(20 * time.Minute)
-	task := &MyTask{ID: 123}
+	task := &myTask{ID: 123}
 	pool.Execute(task)
 }
 
-type MyTask struct {
+type myTask struct {
 	ID int64
 }
 
-func (m *MyTask) Run() {
+func (m *myTask) Run() {
 	fmt.Println("Running my task ", m.ID)
 }

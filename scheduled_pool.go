@@ -6,8 +6,7 @@ import (
 	"time"
 )
 
-// ScheduledThreadPool
-// Schedules the task with the given delay
+// ScheduledThreadPool Schedules the task with the given delay
 type ScheduledThreadPool struct {
 	workers     chan chan interface{}
 	tasks       *sync.Map

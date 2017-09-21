@@ -1,11 +1,11 @@
 package threadpool
 
-// Callable, the tasks which returns the output after exit should implement this interface
+// Callable the tasks which returns the output after exit should implement this interface
 type Callable interface {
 	Call() interface{}
 }
 
-// Future, is the handle returned after submitting a callable task to the thread pool
+// Future is the handle returned after submitting a callable task to the thread pool
 type Future struct {
 	response chan interface{}
 	done     bool
