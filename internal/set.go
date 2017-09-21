@@ -1,21 +1,19 @@
 package internal
 
-import (
-	"github.com/golang/sync/syncmap"
-)
+import "sync"
 
 // Set type
 // This implementation is faster than slices or arrays because it internally uses map to store the data
 // All the values stored as the keys in the map and value is dummy boolean, just a place holder.
 // It stores the Unique elements only
 type Set struct {
-	_map *syncmap.Map
+	_map *sync.Map
 }
 
 // NewSet creates and returns new set
 func NewSet() *Set {
 	set := new(Set)
-	set._map = new(syncmap.Map)
+	set._map = new(sync.Map)
 	return set
 }
 
