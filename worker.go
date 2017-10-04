@@ -21,19 +21,23 @@ func (w Worker) Start() {
 			select {
 			// Wait for the job
 			case job := <-w.jobChannel:
-				// Execute the job based on the task type
-				switch job.(type) {
-				case Runnable:
-					job.(Runnable).Run()
-					break
-				case callableTask:
-					task := job.(callableTask)
-					response := task.Task.Call()
-					task.Handle.done = true
-					task.Handle.response <- response
-					break
-				}
+				w.executeJob(job)
 			}
 		}
 	}()
+}
+
+func (w Worker) executeJob(job interface{}) {
+	// Execute the job based on the task type
+	switch job.(type) {
+	case Runnable:
+		job.(Runnable).Run()
+		break
+	case callableTask:
+		task := job.(callableTask)
+		response := task.Task.Call()
+		task.Handle.done = true
+		task.Handle.response <- response
+		break
+	}
 }
