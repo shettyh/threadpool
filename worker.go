@@ -27,6 +27,7 @@ func (w Worker) Start() {
 	}()
 }
 
+// executeJob executes the job based on the type
 func (w Worker) executeJob(job interface{}) {
 	// Execute the job based on the task type
 	switch job.(type) {
