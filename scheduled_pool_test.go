@@ -6,16 +6,16 @@ import (
 )
 
 var (
-	pool *ScheduledThreadPool
+	schedulerpool *ScheduledThreadPool
 )
 
 func TestNewScheduledThreadPool(t *testing.T) {
-	pool = NewScheduledThreadPool(2)
+	schedulerpool = NewScheduledThreadPool(2)
 }
 
 func TestScheduledThreadPool_Schedule(t *testing.T) {
 	task := &TestTask{TestData: &TestData{Val: "pristine"}}
-	pool.ScheduleOnce(task, time.Second*20)
+	schedulerpool.ScheduleOnce(task, time.Second*20)
 
 	time.Sleep(5 * time.Second)
 
@@ -30,4 +30,8 @@ func TestScheduledThreadPool_Schedule(t *testing.T) {
 	if task.TestData.Val == "pristine" {
 		t.Fail()
 	}
+}
+
+func TestScheduledThreadPool_Close(t *testing.T) {
+	schedulerpool.Close()
 }

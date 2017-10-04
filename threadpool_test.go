@@ -12,17 +12,17 @@ const (
 )
 
 var (
-	Pool *ThreadPool
+	threadpool *ThreadPool
 )
 
 func TestNewThreadPool(t *testing.T) {
-	Pool = NewThreadPool(NumberOfWorkers, QueueSize)
+	threadpool = NewThreadPool(NumberOfWorkers, QueueSize)
 }
 
 func TestThreadPool_Execute(t *testing.T) {
 	data := &TestData{Val: "pristine"}
 	task := &TestTask{TestData: data}
-	Pool.Execute(task)
+	threadpool.Execute(task)
 
 	time.Sleep(2 * time.Second)
 	fmt.Println("")
@@ -34,12 +34,16 @@ func TestThreadPool_Execute(t *testing.T) {
 
 func TestThreadPool_ExecuteFuture(t *testing.T) {
 	task := &TestTaskFuture{}
-	handle := Pool.ExecuteFuture(task)
+	handle := threadpool.ExecuteFuture(task)
 	response := handle.Get()
 	if !handle.IsDone() {
 		t.Fail()
 	}
 	fmt.Println("Thread done ", response)
+}
+
+func TestThreadPool_Close(t *testing.T) {
+	threadpool.Close()
 }
 
 type TestTask struct {
