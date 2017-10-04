@@ -1,6 +1,6 @@
 package threadpool
 
-// Worker type holds the job channel and passed worker pool
+// Worker type holds the job channel and passed worker threadpool
 type Worker struct {
 	jobChannel  chan interface{}
 	workerPool  chan chan interface{}
@@ -16,7 +16,7 @@ func NewWorker(workerPool chan chan interface{}, closeHandle chan bool) *Worker 
 func (w Worker) Start() {
 	go func() {
 		for {
-			// Put the worker to the worker pool
+			// Put the worker to the worker threadpool
 			w.workerPool <- w.jobChannel
 
 			select {

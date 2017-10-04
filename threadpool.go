@@ -10,7 +10,7 @@ type ThreadPool struct {
 	closeHandle chan bool // Channel used to stop all the workers
 }
 
-// NewThreadPool creates thread pool
+// NewThreadPool creates thread threadpool
 func NewThreadPool(noOfWorkers int, queueSize int64) *ThreadPool {
 	threadPool := &ThreadPool{QueueSize: queueSize, NoOfWorkers: noOfWorkers}
 	threadPool.jobQueue = make(chan interface{}, queueSize)
@@ -37,10 +37,10 @@ func (t *ThreadPool) ExecuteFuture(task Callable) *Future {
 
 // Close will close the threadpool
 // It sends the stop signal to all the worker that are running
-//TODO: need to check the existing /running task before closing the pool
+//TODO: need to check the existing /running task before closing the threadpool
 func (t *ThreadPool) Close() {
 	close(t.closeHandle) // Stops all the routines
-	close(t.workerPool)  // Closes the Job pool
+	close(t.workerPool)  // Closes the Job threadpool
 	close(t.jobQueue)    // Closes the job Queue
 }
 
@@ -70,7 +70,7 @@ func (t *ThreadPool) dispatch() {
 			}(job)
 
 		case <-t.closeHandle:
-			// Close thread pool
+			// Close thread threadpool
 			return
 		}
 	}

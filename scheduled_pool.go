@@ -14,10 +14,9 @@ type ScheduledThreadPool struct {
 	counter     uint64
 	counterLock sync.Mutex
 	closeHandle chan bool
-	isClosed    bool
 }
 
-// NewScheduledThreadPool creates new scheduler thread pool with given number of workers
+// NewScheduledThreadPool creates new scheduler thread threadpool with given number of workers
 func NewScheduledThreadPool(noOfWorkers int) *ScheduledThreadPool {
 	pool := &ScheduledThreadPool{}
 	pool.noOfWorkers = noOfWorkers
@@ -28,7 +27,7 @@ func NewScheduledThreadPool(noOfWorkers int) *ScheduledThreadPool {
 	return pool
 }
 
-// createPool creates the workers pool
+// createPool creates the workers threadpool
 func (stf *ScheduledThreadPool) createPool() {
 	for i := 0; i < stf.noOfWorkers; i++ {
 		worker := NewWorker(stf.workers, stf.closeHandle)
@@ -65,10 +64,10 @@ func (stf *ScheduledThreadPool) intervalRunner() {
 		// Convert to tasks set
 		currentTasksSet := currentTasksToRun.(*internal.Set)
 
-		// For each tasks , get a worker from the pool and run the task
+		// For each tasks , get a worker from the threadpool and run the task
 		for _, val := range currentTasksSet.GetAll() {
 			go func(job interface{}) {
-				// get the worker from pool who is free
+				// get the worker from threadpool who is free
 				worker := <-stf.workers
 				// Submit the job to the worker
 				worker <- job
@@ -98,8 +97,9 @@ func (stf *ScheduledThreadPool) ScheduleOnce(task Runnable, delay time.Duration)
 	existingTasks.(*internal.Set).Add(task)
 }
 
-// Close will close the thread pool
+// Close will close the thread threadpool
 // TODO: check the existing task before closing
 func (stf *ScheduledThreadPool) Close() {
 	close(stf.closeHandle)
+
 }
