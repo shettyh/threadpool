@@ -51,6 +51,10 @@ Scalable threadpool implementation using Go to handle the huge network trafic.
   result := future.Get()
   
   ```
+- Close the pool
+  ```
+  pool.Close()
+  ```
 
 ### Scheduled threadpool
 
@@ -63,6 +67,7 @@ Scalable threadpool implementation using Go to handle the huge network trafic.
   task:=&MyTask{}
   pool.ScheduleOnce(task, time.Second*20) // Time delay is in seconds only as of now
   ```
-
-### Note
-This still in works
+- Close the pool
+  ```
+  pool.Close()
+  ```
