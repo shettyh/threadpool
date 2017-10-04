@@ -13,6 +13,8 @@ type ScheduledThreadPool struct {
 	noOfWorkers int
 	counter     uint64
 	counterLock sync.Mutex
+	closeHandle chan bool
+	isClosed    bool
 }
 
 // NewScheduledThreadPool creates new scheduler thread pool with given number of workers
@@ -21,6 +23,7 @@ func NewScheduledThreadPool(noOfWorkers int) *ScheduledThreadPool {
 	pool.noOfWorkers = noOfWorkers
 	pool.workers = make(chan chan interface{}, noOfWorkers)
 	pool.tasks = new(sync.Map)
+	pool.closeHandle = make(chan bool)
 	pool.createPool()
 	return pool
 }
@@ -28,7 +31,7 @@ func NewScheduledThreadPool(noOfWorkers int) *ScheduledThreadPool {
 // createPool creates the workers pool
 func (stf *ScheduledThreadPool) createPool() {
 	for i := 0; i < stf.noOfWorkers; i++ {
-		worker := NewWorker(stf.workers)
+		worker := NewWorker(stf.workers, stf.closeHandle)
 		worker.Start()
 	}
 
@@ -38,8 +41,14 @@ func (stf *ScheduledThreadPool) createPool() {
 // dispatch will check for the task to run for current time and invoke the task
 func (stf *ScheduledThreadPool) dispatch() {
 	for {
-		go stf.intervalRunner()     // Runner to check the task to run for current time
-		time.Sleep(time.Second * 1) // Check again after 1 sec
+		select {
+		case <-stf.closeHandle:
+			//Stop the scheduler
+			return
+		default:
+			go stf.intervalRunner()     // Runner to check the task to run for current time
+			time.Sleep(time.Second * 1) // Check again after 1 sec
+		}
 	}
 }
 
@@ -87,4 +96,10 @@ func (stf *ScheduledThreadPool) ScheduleOnce(task Runnable, delay time.Duration)
 	}
 	// Add task
 	existingTasks.(*internal.Set).Add(task)
+}
+
+// Close will close the thread pool
+// TODO: check the existing task before closing
+func (stf *ScheduledThreadPool) Close() {
+	close(stf.closeHandle)
 }
