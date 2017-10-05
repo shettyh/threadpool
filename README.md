@@ -1,6 +1,7 @@
 # Golang Threadpool implementation
 [![Build Status](https://travis-ci.org/shettyh/threadpool.svg?branch=master)](https://travis-ci.org/shettyh/threadpool)
 [![codecov](https://codecov.io/gh/shettyh/threadpool/branch/master/graph/badge.svg)](https://codecov.io/gh/shettyh/threadpool)
+[![GoDoc](https://godoc.org/github.com/shettyh/threadpool?status.svg)](https://godoc.org/github.com/shettyh/threadpool)
 
 Scalable threadpool implementation using Go to handle the huge network trafic. 
 
