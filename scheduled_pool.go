@@ -79,8 +79,8 @@ func (stf *ScheduledThreadPool) intervalRunner() {
 // updateCounter thread safe update of counter
 func (stf *ScheduledThreadPool) updateCounter() {
 	stf.counterLock.Lock()
+	defer stf.counterLock.Unlock()
 	stf.counter++
-	stf.counterLock.Unlock()
 }
 
 // ScheduleOnce the task with given delay
@@ -101,5 +101,4 @@ func (stf *ScheduledThreadPool) ScheduleOnce(task Runnable, delay time.Duration)
 // TODO: check the existing task before closing
 func (stf *ScheduledThreadPool) Close() {
 	close(stf.closeHandle)
-
 }
