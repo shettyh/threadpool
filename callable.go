@@ -5,7 +5,7 @@ type Callable interface {
 	Call() interface{}
 }
 
-// Future is the handle returned after submitting a callable task to the thread pool
+// Future is the handle returned after submitting a callable task to the thread threadpool
 type Future struct {
 	response chan interface{}
 	done     bool
