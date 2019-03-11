@@ -30,12 +30,11 @@ func (w Worker) Start() {
 // executeJob executes the job based on the type
 func (w Worker) executeJob(job interface{}) {
 	// Execute the job based on the task type
-	switch job.(type) {
+	switch task := job.(type) {
 	case Runnable:
-		job.(Runnable).Run()
+		task.Run()
 		break
 	case callableTask:
-		task := job.(callableTask)
 		response := task.Task.Call()
 		task.Handle.done = true
 		task.Handle.response <- response
