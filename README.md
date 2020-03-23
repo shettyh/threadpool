@@ -31,7 +31,7 @@ Scalable threadpool implementation using Go to handle the huge network trafic.
 - Create Task and execute
   ```
   task:=&MyTask{}
-  pool.Execute(task)
+  err := pool.Execute(task)
   ```
 - Using `Callable` task
   ```
@@ -44,7 +44,7 @@ Scalable threadpool implementation using Go to handle the huge network trafic.
   
   //Execute callable task
   task := &MyTaskCallable{}
-  future := pool.ExecuteFuture(task)
+  future, err := pool.ExecuteFuture(task)
   
   //Check if the task is done
   isDone := future.IsDone() // true/false

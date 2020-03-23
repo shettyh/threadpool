@@ -34,7 +34,7 @@ func TestThreadPool_Execute(t *testing.T) {
 
 func TestThreadPool_ExecuteFuture(t *testing.T) {
 	task := &TestTaskFuture{}
-	handle := threadpool.ExecuteFuture(task)
+	handle, _ := threadpool.ExecuteFuture(task)
 	response := handle.Get()
 	if !handle.IsDone() {
 		t.Fail()
@@ -43,6 +43,44 @@ func TestThreadPool_ExecuteFuture(t *testing.T) {
 }
 
 func TestThreadPool_Close(t *testing.T) {
+	threadpool.Close()
+}
+
+
+func TestQueueFullError(t *testing.T) {
+	threadpool := NewThreadPool(0, 1)
+
+	data := &TestData{Val: "pristine"}
+	task := &TestTask{TestData: data}
+
+	err := threadpool.Execute(task)
+	if err != nil {
+		t.Fail()
+	}
+
+	err = threadpool.Execute(task)
+	if err == nil || err != ErrQueueFull {
+		t.Fail()
+	}
+
+	threadpool.Close()
+}
+
+func TestQueueFullError_Future(t *testing.T) {
+	threadpool := NewThreadPool(0, 1)
+
+	task := &TestLongTaskFuture{}
+
+	_, err := threadpool.ExecuteFuture(task)
+	if err != nil {
+		t.Fail()
+	}
+
+	_, err = threadpool.ExecuteFuture(task)
+	if err == nil || err != ErrQueueFull {
+		t.Fail()
+	}
+
 	threadpool.Close()
 }
 
@@ -59,8 +97,22 @@ func (t *TestTask) Run() {
 	t.TestData.Val = "changed"
 }
 
+type TestLongTask struct { }
+
+func (t TestLongTask) Run() {
+	time.Sleep(5 * time.Second)
+}
+
 type TestTaskFuture struct{}
 
 func (t *TestTaskFuture) Call() interface{} {
+	return "Done"
+}
+
+
+type TestLongTaskFuture struct{}
+
+func (t *TestLongTaskFuture) Call() interface{} {
+	time.Sleep(5 * time.Second)
 	return "Done"
 }
