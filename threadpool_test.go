@@ -46,6 +46,26 @@ func TestThreadPool_Close(t *testing.T) {
 	threadpool.Close()
 }
 
+
+func TestQueueFullError(t *testing.T) {
+	threadpool := NewThreadPool(0, 1)
+
+	data := &TestData{Val: "pristine"}
+	task := &TestTask{TestData: data}
+
+	err := threadpool.Execute(task)
+	if err != nil {
+		t.Fail()
+	}
+
+	err = threadpool.Execute(task)
+	if err == nil || err != ErrQueueFull {
+		t.Fail()
+	}
+
+	threadpool.Close()
+}
+
 type TestTask struct {
 	TestData *TestData
 }
@@ -57,6 +77,12 @@ type TestData struct {
 func (t *TestTask) Run() {
 	fmt.Println("Running the task")
 	t.TestData.Val = "changed"
+}
+
+type TestLongTask struct { }
+
+func (t TestLongTask) Run() {
+	time.Sleep(5 * time.Second)
 }
 
 type TestTaskFuture struct{}
