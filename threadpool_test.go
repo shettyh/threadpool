@@ -66,6 +66,24 @@ func TestQueueFullError(t *testing.T) {
 	threadpool.Close()
 }
 
+func TestQueueFullError_Future(t *testing.T) {
+	threadpool := NewThreadPool(0, 1)
+
+	task := &TestLongTaskFuture{}
+
+	_, err := threadpool.ExecuteFuture(task)
+	if err != nil {
+		t.Fail()
+	}
+
+	_, err = threadpool.ExecuteFuture(task)
+	if err == nil || err != ErrQueueFull {
+		t.Fail()
+	}
+
+	threadpool.Close()
+}
+
 type TestTask struct {
 	TestData *TestData
 }
@@ -88,5 +106,13 @@ func (t TestLongTask) Run() {
 type TestTaskFuture struct{}
 
 func (t *TestTaskFuture) Call() interface{} {
+	return "Done"
+}
+
+
+type TestLongTaskFuture struct{}
+
+func (t *TestLongTaskFuture) Call() interface{} {
+	time.Sleep(5 * time.Second)
 	return "Done"
 }
