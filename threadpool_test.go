@@ -34,7 +34,7 @@ func TestThreadPool_Execute(t *testing.T) {
 
 func TestThreadPool_ExecuteFuture(t *testing.T) {
 	task := &TestTaskFuture{}
-	handle := threadpool.ExecuteFuture(task)
+	handle, _ := threadpool.ExecuteFuture(task)
 	response := handle.Get()
 	if !handle.IsDone() {
 		t.Fail()
