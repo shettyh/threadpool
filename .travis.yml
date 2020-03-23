@@ -6,7 +6,6 @@ os: linux
 
 go:
   - 1.9.x
-  - 1.14.x
 
 install: true
 
